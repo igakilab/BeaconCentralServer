@@ -13,7 +13,7 @@ beacon2 = {
 beacon3 = {
   uuid: "81554b2ffe66404c99bc70cedcb54523"
   major: 0
-  minor: 960
+  minor: 120
   proximity: 'immediate'
 }
 beacon4 = {
