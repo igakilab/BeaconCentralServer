@@ -1,0 +1,19 @@
+{
+  "name": "beacon-central-server",
+  "version": "1.0.0",
+  "description": "ibeacon detect server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/koike-marshmallow/BeaconCentralServer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/koike-marshmallow/BeaconCentralServer/issues"
+  },
+  "homepage": "https://gitlab.com/koike-marshmallow/BeaconCentralServer#README"
+}
