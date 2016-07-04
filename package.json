@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://gitlab.com/koike-marshmallow/BeaconCentralServer/issues"
   },
-  "homepage": "https://gitlab.com/koike-marshmallow/BeaconCentralServer#README"
+  "homepage": "https://gitlab.com/koike-marshmallow/BeaconCentralServer#README",
+  "dependencies": {
+    "bleacon": "^0.4.0"
+  }
 }
