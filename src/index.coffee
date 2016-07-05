@@ -5,16 +5,20 @@ Bleacon = require 'bleacon'
 colorString = (str, ccode) ->
   return "\u001b[#{ccode}m#{str}\u001b[0m"
 
+coloredProxString = (bcon) ->
+  return switch bcon.proximity
+    when 'immediate'
+      colorString bcon.proximity, 31
+    when 'near'
+      colorString bcon.proximity, 33
+    else
+      colorString bcon.proximity, 32
+
 beaconLog = (bcon) ->
   uuid = colorString "#{bcon.uuid}(#{bcon.major}-#{bcon.minor})", 36
-  prox = bcon.proximity
-  if prox is "immediate"
-    prox = colorString prox, 31
-  else if prox is "near"
-    prox = colorString prox, 33
-  else
-    prox = colorString prox, 32
+  prox = coloredProxString bcon
   console.log "uuid:#{uuid}, proximity:#{prox}"
+  console.log "\trssi:#{bcon.rssi}(#{bcon.measuredPower}), accuracy:#{bcon.accuracy.toFixed(2)}"
 
 ### main ###
 manager = new BeaconManager()
