@@ -1,48 +1,38 @@
+RedisTable = require './redis-key-table'
+RedisHash = require './redis-key-hash'
+
 class BeaconManager
   constructor: () ->
-    this.beacons = []
+    this.tdb = RedisTable.createClient "beacon", "histories"
+    this.hdb = RedisHash.cloneClient this.tdb, "beacon", "cache"
 
-  getBeaconIndex: (bcon) ->
-    for i in [0...this.beacons.length]
-      if this.beaconEquals bcon, this.beacons[i]
-        return i
-    return -1
+  beaconStringKey: (uuid, major, minor) ->
+    major = major - 0
+    minor = minor - 0
+    return "#{uuid}-#{major}-#{minor}"
 
-
-#  getBeaconIndexByUuid: (id) ->
-#    for i in [0...this.beacons.length]
-#      if this.beacons[i].uuid and this.beacons[i].uuid is id
-#        return i
-#    return -1
-#
-#  getBeaconByUuid: (id) ->
-#    idx = this.getBeaconIndexByUuid id
-#    if idx >= 0
-#      return this.beacons[idx]
-#    else
-#      return null
-
+  errorHandler: (err, res) ->
+    console.log err
 
   applyBeacon: (bcon, tmark) ->
-    if tmark then bcon.timeStamp = new Date()
-    idx = this.getBeaconIndex bcon
-    if idx >= 0
-      this.beacons[idx] = bcon
-    else
-      this.beacons.push bcon
+    if tmark then bcon.timestamp = Date.now()
+    skey = this.beaconStringKey bcon.uuid, bcon.major, bcon.minor
+    tdb.push skey, bcon, this.errorHandler
+    hdb.push skey, bcon, this.errorHandler
 
-  getBeaconList: (bcon) ->
-    return this.beacons.concat()
+  getBeaconList: (bcon, callback) ->
+    hdb.getAll (err, res) ->
+      if err then callback err, res; return
+      result = []
+      for eres in res
+        result.push eres.value
+      callback err, result
 
-  beaconEquals: (b1, b2) ->
-    if b1 and b2
-      if b1.uuid isnt b2.uuid
-        return false
-      if b1.major isnt b2.major
-        return false
-      if b1.minor isnt b2.minor
-        return false
-    return true
+  getBeaconHistory: (uuid, major, minor, callback) ->
+    skey = beaconStringKey uuid, major, minor
+    tdb.get skey, (err, res) ->
+      if err then callback err, null; return
+      callback err, res.toArray()
 
 
 # export module
