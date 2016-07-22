@@ -43,3 +43,6 @@ class BeaconHistoryDatabase
   getBeaconHistory: (uuid, major, minor, callback) ->
     bcon = {uuid: uuid, major: major, minor: minor}
     this.db.get this.bconKey(bcon), callback
+
+
+module.exports = BeaconHisotryDatabase
