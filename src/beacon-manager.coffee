@@ -1,38 +1,32 @@
-RedisTable = require './redis-key-table'
-RedisHash = require './redis-key-hash'
+BeaconHistorydb = require './beacon-history-db'
+BeaconCachedb = require './beacon-cache-db'
 
 class BeaconManager
   constructor: () ->
-    this.tdb = RedisTable.createClient "beacon", "histories"
-    this.hdb = RedisHash.cloneClient this.tdb, "beacon", "cache"
-
-  beaconStringKey: (uuid, major, minor) ->
-    major = major - 0
-    minor = minor - 0
-    return "#{uuid}-#{major}-#{minor}"
+    this.historydb = new BeaconHistorydb "beacon", "histories"
+    this.cachedb = new BaeconCachedb "beacon", "cache"
 
   errorHandler: (err, res) ->
     console.log err
 
   applyBeacon: (bcon, tmark) ->
     if tmark then bcon.timestamp = Date.now()
-    skey = this.beaconStringKey bcon.uuid, bcon.major, bcon.minor
-    tdb.push skey, bcon, this.errorHandler
-    hdb.push skey, bcon, this.errorHandler
+    this.historydb.applyBeacon bcon
+    this.cachedb.applyBeacon bcon
 
-  getBeaconList: (bcon, callback) ->
-    hdb.getAll (err, res) ->
+  getBeaconList: (callback) ->
+    cacheDb.getAll (err, res) ->
       if err then callback err, res; return
-      result = []
+      reply = []
       for eres in res
-        result.push eres.value
-      callback err, result
+        eres.hid = eres.key
+        reply.push eres
+      callback err, reply
 
-  getBeaconHistory: (uuid, major, minor, callback) ->
-    skey = beaconStringKey uuid, major, minor
-    tdb.get skey, (err, res) ->
+  getHistoryById: (hashedKey, callback) ->
+    this.cachedb.getBeconByHashedKey hashedKey, (err, res) ->
       if err then callback err, null; return
-      callback err, res.toArray()
+      historydb.getBeaconHistory res.uuid, res.major, callback
 
 
 # export module
