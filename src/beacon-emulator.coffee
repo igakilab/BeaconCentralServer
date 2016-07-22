@@ -13,7 +13,7 @@ class BeaconEmulator
 
   constructor: (model, onDiscover) ->
     this.model = model ? BeaconEmulator.defaultModel
-    this.onDiscover = onDiscover
+    this.fdiscover = onDiscover
     this.rssis = BeaconEmulator.defaultRssi
     this.pid = null
 
@@ -23,16 +23,20 @@ class BeaconEmulator
   setRssiRange: (min, max) ->
     this.rssis = [min..max]
 
-  exec: () ->
+  onDiscover: (func) ->
+    this.fdiscover = func
+
+  exec: (mine) ->
     bcon = {}
-    for k,v of this.model
+    for k,v of mine.model
       bcon[k] = v
-    bcon.rssi = random this.rssis
-    this.onDiscover? bcon
+    bcon.rssi = BeaconEmulator.random mine.rssis
+    mine.fdiscover? bcon
 
   start: (interval) ->
     if this.pid is null
-      this.pid = setInterval this.exec, interval
+      exec = this.exec
+      this.pid = setInterval this.exec, interval, this
 
   stop: () ->
     if this.pid isnt null
@@ -41,3 +45,6 @@ class BeaconEmulator
 
   isRun: () ->
     return this.pid isnt null
+
+
+module.exports = BeaconEmulator
