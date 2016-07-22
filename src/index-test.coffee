@@ -18,7 +18,7 @@ generateBeacon = () ->
     uuid: inf.uuid
     major: inf.major
     minor: inf.minor
-    rssi = random rndRssis
+    rssi: random rndRssis
   bcon.accuracy = Math.pow 12.0, (1.5*((bcon.rssi/bcon.measuredPower)-1))
   if bcon.accuracy < 0
     bcon.proximity = "unknown"
@@ -42,7 +42,7 @@ beacon2 = {
   minor: 4
   proximity: 'immediate'
 }
-beacon3 =,{
+beacon3 ={
   uuid: "81554b2ffe66404c99bc70cedcb54523",
   major: 0
   minor: 120
