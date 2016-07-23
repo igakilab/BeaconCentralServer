@@ -12,9 +12,11 @@ beacon1 = new BeaconEmulator model1
 beacon1.setRssiRange -40, -70
 beacon1.onDiscover (bcon) ->
   console.log bcon
-  manager.applyBeacon bcon
+  manager.applyBeacon bcon, true
 
-beacon1.start 1000
+manager.historydb.db.flush()
+
+beacon1.start 500
 
 terminate = () ->
   beacon1.stop()

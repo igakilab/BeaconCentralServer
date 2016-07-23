@@ -17,7 +17,7 @@ class BeaconHistoryDatabase
   canBeaconApply: (newBcon, retrieve) ->
     if retrieve?
       if newBcon.timestamp? and retrieve.timestamp?
-        dif = newBcon.timestamp - retrieve.timestamp?
+        dif = newBcon.timestamp - retrieve.timestamp
         return dif > this.interval
       else
         return true
