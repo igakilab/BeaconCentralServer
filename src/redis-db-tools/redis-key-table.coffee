@@ -94,12 +94,21 @@ class RedisKeyTable
       if err then callback err, null; return
       callback err, new RecordList res
 
+  trim: (key, s, e, callback) ->
+    this.client.ltrim this.redisTableKey(key), s, e, callback
+
   push: (key, val, callback) ->
     record = JSON.stringify val
     if this.inFirst
       this.client.lpush this.redisTableKey(key), record, callback
     else
       this.client.rpush this.redisTableKey(key), record, callback
+
+  shift: (key, callback) ->
+    if this.inFirst
+      this.client.rpop this.redisTableKey(key), record, callback
+    else
+      this.client.lpop this.redisTableKey(key), record, callback
 
   retrieve: (key, callback) ->
     idx = if this.inFirst then 0 else -1
