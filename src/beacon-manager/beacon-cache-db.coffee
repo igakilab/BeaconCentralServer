@@ -1,4 +1,4 @@
-Hashdb = require './redis-key-hash'
+Hashdb = require '../redis-db-tools/redis-key-hash'
 
 class BeaconCacheDatabase
   constructor: (dbname, colname) ->

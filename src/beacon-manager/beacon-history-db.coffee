@@ -1,4 +1,4 @@
-Tabledb = require './redis-key-table'
+Tabledb = require '../redis-db-tools/redis-key-table'
 
 DEFAULT_LIST_LENGTH = 1000
 DEFAULT_INTERVAL = 1000
