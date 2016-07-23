@@ -4,7 +4,7 @@ BeaconCachedb = require './beacon-cache-db'
 class BeaconManager
   constructor: () ->
     this.historydb = new BeaconHistorydb "beacon", "histories"
-    this.cachedb = new BaeconCachedb "beacon", "cache"
+    this.cachedb = new BeaconCachedb "beacon", "cache"
 
   errorHandler: (err, res) ->
     console.log err
@@ -15,18 +15,23 @@ class BeaconManager
     this.cachedb.applyBeacon bcon
 
   getBeaconList: (callback) ->
-    cacheDb.getAll (err, res) ->
+    this.cachedb.getAllBeacon (err, res) ->
       if err then callback err, res; return
       reply = []
       for eres in res
-        eres.hid = eres.key
-        reply.push eres
+        eres.value.hid = eres.key
+        reply.push eres.value
       callback err, reply
 
   getHistoryById: (hashedKey, callback) ->
-    this.cachedb.getBeconByHashedKey hashedKey, (err, res) ->
+    mng = this
+    this.cachedb.getBeaconByHashedKey hashedKey, (err, res) ->
       if err then callback err, null; return
-      historydb.getBeaconHistory res.uuid, res.major, callback
+      mng.historydb.getBeaconHistory res.uuid, res.major, res.minor, callback
+
+  quit: () ->
+    this.historydb.quit()
+    this.cachedb.quit()
 
 
 # export module

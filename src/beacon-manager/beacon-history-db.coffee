@@ -25,24 +25,27 @@ class BeaconHistoryDatabase
       return true
 
   applyBeacon: (bcon, callback) ->
+    mng = this
     this.db.retrieve this.bconKey(bcon), (err, res) ->
       if err then callback err, null; return
-      if this.canBeaconApply bcon, res
-        this.addBeaconToDB bcon, callback
+      if mng.canBeaconApply bcon, res
+        mng.addBeaconToDB bcon, callback
       else
-        callback err, false
+        callback? err, false
 
   addBeaconToDB: (bcon, callback) ->
-    this.db.push this.bconKey(bcon), (err, res) ->
+    this.db.push this.bconKey(bcon), bcon, (err, res) ->
       if err then callback err, null; return
       if res > this.listLength
         this.db.shift this.bconKey(bcon), callback
       else
-        callback err, res
+        callback? err, res
 
   getBeaconHistory: (uuid, major, minor, callback) ->
     bcon = {uuid: uuid, major: major, minor: minor}
     this.db.get this.bconKey(bcon), callback
 
+  quit: (callback) ->
+    this.db.quit callback
 
-module.exports = BeaconHisotryDatabase
+module.exports = BeaconHistoryDatabase

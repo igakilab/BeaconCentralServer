@@ -101,10 +101,11 @@ class RedisKeyTable
     else
       this.client.rpush this.redisTableKey(key), record, callback
 
-  retrieve: (key, val, callback) ->
-    this.client.lrange this.redisTableKey(key), 0, 0, (err, res) ->
+  retrieve: (key, callback) ->
+    idx = if this.inFirst then 0 else -1
+    this.client.lindex this.redisTableKey(key), idx, (err, res) ->
       if err then callback err, null; return
-      result = if res[0]? then null else JSON.parse res[0]
+      result = if res? then JSON.parse res else null
       callback err, result
 
   length: (key, callback) ->

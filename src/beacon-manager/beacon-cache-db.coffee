@@ -2,7 +2,7 @@ Hashdb = require '../redis-db-tools/redis-key-hash'
 
 class BeaconCacheDatabase
   constructor: (dbname, colname) ->
-    this.db = Tabledb.createClient dbname, colname
+    this.db = Hashdb.createClient dbname, colname
 
   bconKey: (bcon) ->
     major = bcon.major - 0
@@ -24,6 +24,9 @@ class BeaconCacheDatabase
 
   getAllBeacon: (callback) ->
     this.db.getAll callback
+
+  quit: (callback) ->
+    this.db.quit callback
 
 
 module.exports = BeaconCacheDatabase
