@@ -16,14 +16,14 @@ class BeaconCentralServer
   getAllBeacon: (callback) ->
     reply = {centralId: this.id}
     this.manager.getBeaconList (err, res) ->
+      if err then reply.err = err
       reply.beacons = res
-      reply.err = err
       callback reply
 
   getBeaconHistory: (id, callback) ->
     reply = {centralId: this.id, beaconId: id}
     this.manager.getHistoryById id, (err, res) ->
-      reply.err = err
+      if err then reply.err = err
       reply.histories = res
       callback reply
 

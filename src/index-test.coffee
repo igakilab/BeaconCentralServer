@@ -16,9 +16,14 @@ beacon1.setRssiRange -40, -70
 beacon1.onDiscover (bcon) ->
   console.log bcon
   manager.applyBeacon bcon, true
+beacon2 = new BeaconEmulator model2
+beacon2.setRssiRange -40, -70
+beacon2.onDiscover (bcon) ->
+  console.log bcon
+  manager.applyBeacon bcon, true
 
-server = new BeaconCentralServer manager, "test-server-1"
+server = new BeaconCentralServer manager
 server.listen 1337
 
-
 beacon1.start 500
+beacon2.start 400
