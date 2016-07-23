@@ -27,6 +27,7 @@ class BeaconManager
     mng = this
     this.cachedb.getBeaconByHashedKey hashedKey, (err, res) ->
       if err then callback err, null; return
+      unless res? then callback err, []; return
       mng.historydb.getBeaconHistory res.uuid, res.major, res.minor, callback
 
   quit: () ->

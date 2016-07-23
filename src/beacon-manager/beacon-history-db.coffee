@@ -43,7 +43,9 @@ class BeaconHistoryDatabase
 
   getBeaconHistory: (uuid, major, minor, callback) ->
     bcon = {uuid: uuid, major: major, minor: minor}
-    this.db.get this.bconKey(bcon), callback
+    this.db.get this.bconKey(bcon), (err, res) ->
+      if err then callback err, null; return
+      callback err, res.toArray()
 
   quit: (callback) ->
     this.db.quit callback
