@@ -39,7 +39,7 @@ class BeaconManager
       if err then callback err, null; return
       changes = []
       for i in [0...res.length]
-        pre = if changes > 0 then changes[changes.length-1] else null
+        pre = if changes.length > 0 then changes[changes.length-1] else null
         if pre? and (res[i].timestamp - pre.timestamp) >= t.detectTimeout
           changes.push {
             timestamp: pre.timestamp + t.detectTimeout
@@ -53,12 +53,9 @@ class BeaconManager
           }
       if changes.length > 0
         if (Date.now() - changes[changes.length-1].timestamp) >= t.detectTimeout
-          now = Date.now()
-          diff = now - changes[changes.length-1].timestamp
           changes.push {
             timestamp: changes[changes.length-1].timestamp + t.detectTimeout
             proximity: "unknown"
-            debug: "now:#{now} pre:#{changes[changes.length-1].timestamp} diff:#{diff}"
           }
       callback err, changes
 

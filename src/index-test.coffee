@@ -26,7 +26,7 @@ manager.cachedb.db.flush()
 manager.historydb.db.flush()
 
 beacon1 = new BeaconEmulator model1
-beacon1.setRssiRange -40, -70
+beacon1.setRssiRange -35, -45
 beacon1.onDiscover discoverBeacon
 beacon2 = new BeaconEmulator model2
 beacon2.setRssiRange -40, -70
