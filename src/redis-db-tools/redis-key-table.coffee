@@ -106,9 +106,9 @@ class RedisKeyTable
 
   shift: (key, callback) ->
     if this.inFirst
-      this.client.rpop this.redisTableKey(key), record, callback
+      this.client.rpop this.redisTableKey(key), callback
     else
-      this.client.lpop this.redisTableKey(key), record, callback
+      this.client.lpop this.redisTableKey(key), callback
 
   retrieve: (key, callback) ->
     idx = if this.inFirst then 0 else -1

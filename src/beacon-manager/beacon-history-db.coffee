@@ -34,10 +34,11 @@ class BeaconHistoryDatabase
         callback? err, false
 
   addBeaconToDB: (bcon, callback) ->
+    t = this
     this.db.push this.bconKey(bcon), bcon, (err, res) ->
       if err then callback err, null; return
-      if res > this.listLength
-        this.db.shift this.bconKey(bcon), callback
+      if res > t.listLength
+        t.db.shift t.bconKey(bcon), callback
       else
         callback? err, res
 
