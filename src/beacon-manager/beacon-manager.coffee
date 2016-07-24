@@ -33,7 +33,7 @@ class BeaconManager
       unless res? then callback err, []; return
       mng.historydb.getBeaconHistory res.uuid, res.major, res.minor, callback
 
-  getChangesLog: (hashedKey, callback) ->
+  getChangesLogById: (hashedKey, callback) ->
     t = this
     this.getHistoryById hashedKey, (err, res) ->
       if err then callback err, null; return
@@ -53,10 +53,13 @@ class BeaconManager
           }
       if changes.length > 0
         if (Date.now() - changes[changes.length-1].timestamp) >= t.detectTimeout
-           changes.push {
-             timestamp: changes[changes.length-1].timestamp + t.detectTimeout
-             proximity: "unknown"
-           }
+          now = Date.now()
+          diff = now - changes[changes.length-1].timestamp
+          changes.push {
+            timestamp: changes[changes.length-1].timestamp + t.detectTimeout
+            proximity: "unknown"
+            debug: "now:#{now} pre:#{changes[changes.length-1].timestamp} diff:#{diff}"
+          }
       callback err, changes
 
   quit: () ->
