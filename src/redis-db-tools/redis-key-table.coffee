@@ -3,6 +3,7 @@ Redis = require 'redis'
 
 SEPARATOR = ":"
 DEFAULT_IN_FIRST = true
+DEFAULT_AUTO_HASH = true
 
 FUNC_HASHING = (key) ->
   alg = Crypto.createHash "md5"
@@ -49,11 +50,14 @@ class RecordList
       if !filter? or filter rec
         func rec
 
-  toArray: () ->
-    ary = []
-    for recs in this.list
-      ary.push JSON.parse recs
-    return ary
+  toArray: (rev) ->
+    r =
+      start: if rev then this.list.length-1 else 0
+      end: if rev then 0 else this.list.length-1
+    array = []
+    for i in [r.start..r.end]
+      array.push JSON.parse this.list[i]
+    return array
 
   length: () ->
     return this.list.length
@@ -76,12 +80,14 @@ class RedisKeyTable
     this.dbname = dbname
     this.colname = colname
     this.inFirst = DEFAULT_IN_FIRST
+    this.autoHash = DEFAULT_AUTO_HASH
 
   redisKey: () ->
     return "#{this.dbname}#{SEPARATOR}#{this.colname}"
 
   redisTableKey: (tableKey, all) ->
-    hkey = if all then "*" else RedisKeyTable.hashing tableKey
+    hkey = if all then "*" else
+      if this.autoHash then RedisKeyTable.hashing tableKey else tableKey
     return "#{this.redisKey()}#{SEPARATOR}#{hkey}"
 
   get: (key, callback) ->
@@ -106,9 +112,9 @@ class RedisKeyTable
 
   shift: (key, callback) ->
     if this.inFirst
-      this.client.rpop this.redisTableKey(key), callback
+      this.client.rpop this.redisTableKey(key), record, callback
     else
-      this.client.lpop this.redisTableKey(key), callback
+      this.client.lpop this.redisTableKey(key), record, callback
 
   retrieve: (key, callback) ->
     idx = if this.inFirst then 0 else -1

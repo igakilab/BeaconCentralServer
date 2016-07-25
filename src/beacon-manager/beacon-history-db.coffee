@@ -6,13 +6,14 @@ DEFAULT_INTERVAL = 1000
 class BeaconHistoryDatabase
   constructor: (dbname, colname) ->
     this.db = Tabledb.createClient dbname, colname
+    this.db.autoHash = false
     this.listLength = DEFAULT_LIST_LENGTH
     this.interval = DEFAULT_INTERVAL
 
   bconKey: (bcon) ->
     major = bcon.major - 0
     minor = bcon.minor - 0
-    return "#{bcon.uuid}-#{bcon.major}-#{bcon.minor}"
+    return Tabledb.hashing "#{bcon.uuid}-#{bcon.major}-#{bcon.minor}"
 
   canBeaconApply: (newBcon, retrieve) ->
     if retrieve?
@@ -44,9 +45,12 @@ class BeaconHistoryDatabase
 
   getBeaconHistory: (uuid, major, minor, callback) ->
     bcon = {uuid: uuid, major: major, minor: minor}
-    this.db.get this.bconKey(bcon), (err, res) ->
+    this.getBeaconHistoryByKey this.bconKey(bcon), callback
+
+  getBeaconHistoryByKey: (key, callback) ->
+    this.db.get key, (err, res) ->
       if err then callback err, null; return
-      callback err, res.toArray()
+      callback err, res.toArray(true)
 
   quit: (callback) ->
     this.db.quit callback
