@@ -19,7 +19,7 @@ class BeaconManager
       if err then callback err, res; return
       reply = []
       for eres in res
-        eres.value.hid = eres.key
+        eres.value.key = eres.key
         reply.push eres.value
       callback err, reply
 

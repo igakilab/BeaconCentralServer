@@ -21,7 +21,7 @@ class BeaconCentralServer
       callback reply
 
   getBeaconHistory: (id, callback) ->
-    reply = {centralId: this.id, beaconId: id}
+    reply = {centralId: this.id, beaconKey: id}
     this.manager.getHistoryById id, (err, res) ->
       if err then reply.err = err
       reply.histories = res
@@ -37,8 +37,8 @@ class BeaconCentralServer
         res.set 'Access-Control-Allow-Origin', "*"
         res.json reply
     #BeaconHistory
-    router.get "/history/:beacon_id", (req, res) ->
-      thisp.getBeaconHistory req.params.beacon_id, (reply) ->
+    router.get "/history/:beacon_key", (req, res) ->
+      thisp.getBeaconHistory req.params.beacon_key, (reply) ->
         res.set 'Access-Control-Allow-Origin', "*"
         res.json reply
     #configure app
