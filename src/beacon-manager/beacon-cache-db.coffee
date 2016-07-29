@@ -3,6 +3,7 @@ Hashdb = require '../redis-db-tools/redis-key-hash'
 class BeaconCacheDatabase
   constructor: (dbname, colname) ->
     this.db = Hashdb.createClient dbname, colname
+    this.db.autoHash = false
 
   bconKey: (bcon) ->
     major = bcon.major - 0

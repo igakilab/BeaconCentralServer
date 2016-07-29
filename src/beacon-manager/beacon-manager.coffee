@@ -1,10 +1,19 @@
+Tabledb = require '../redis-db-tools/redis-key-table'
 BeaconHistorydb = require './beacon-history-db'
 BeaconCachedb = require './beacon-cache-db'
+
+generateBeaconKey = (bcon) ->
+  major = bcon.major - 0
+  minor = bcon.minor - 0
+  digest = Tabledb.hashing "#{bcon.uuid}-#{major}-#{minor}"
+  return digest.substr 0, 8
 
 class BeaconManager
   constructor: () ->
     this.historydb = new BeaconHistorydb "beacon", "histories"
+    this.historydb.bconKey = generateBeaconKey
     this.cachedb = new BeaconCachedb "beacon", "cache"
+    this.cachedb.bconKey = generateBeaconKey
 
   errorHandler: (err, res) ->
     console.log err
