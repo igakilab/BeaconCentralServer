@@ -25,6 +25,7 @@ class BeaconCentralServer
     this.manager.getHistoryById id, (err, res) ->
       if err then reply.err = err
       reply.histories = res
+      reply.len = res.length
       callback reply
 
   buildServer: () ->
