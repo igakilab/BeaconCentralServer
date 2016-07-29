@@ -51,6 +51,7 @@ class RecordList
         func rec
 
   toArray: (rev) ->
+    if this.list.length <= 0 then return []
     r =
       start: if rev then this.list.length-1 else 0
       end: if rev then 0 else this.list.length-1
