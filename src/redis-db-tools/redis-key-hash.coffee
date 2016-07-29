@@ -24,13 +24,13 @@ class RedisKeyHash
     this.client = client
     this.dbname = dbname
     this.colname = colname
-    this.isHashing = true
+    this.autoHash = true
 
   redisKey: () ->
     return "#{this.dbname}#{SEPARATOR}#{this.colname}"
 
   fieldHash: (key) ->
-    return if this.isHashing then RedisKeyHash.hashing key else key
+    return if this.autoHash then RedisKeyHash.hashing key else key
 
   get: (key, callback) ->
     this.client.hget this.redisKey(), this.fieldHash(key), (err, res) ->

@@ -7,7 +7,7 @@ class BeaconCacheDatabase
   bconKey: (bcon) ->
     major = bcon.major - 0
     minor = bcon.minor - 0
-    return "#{bcon.uuid}-#{major}-#{minor}"
+    return Hashdb.hashing "#{bcon.uuid}-#{major}-#{minor}"
 
   applyBeacon: (bcon, callback) ->
     this.db.set this.bconKey(bcon), bcon, callback
