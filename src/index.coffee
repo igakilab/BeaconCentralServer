@@ -1,4 +1,4 @@
-BeaconManager = require './beacon-manager'
+BeaconManager = require './beacon-manager/beacon-manager'
 BeaconCentralServer = require './beacon-central-server'
 Bleacon = require 'bleacon'
 
@@ -14,7 +14,7 @@ coloredProxString = (bcon) ->
     else
       colorString bcon.proximity, 32
 
-beaconLog = (bcon) ->
+printBeacon = (bcon) ->
   uuid = colorString "#{bcon.uuid}(#{bcon.major}-#{bcon.minor})", 36
   prox = coloredProxString bcon
   console.log "uuid:#{uuid}, proximity:#{prox}"
@@ -24,7 +24,7 @@ beaconLog = (bcon) ->
 manager = new BeaconManager()
 Bleacon.on 'discover', (bcon) ->
   manager.applyBeacon bcon, true
-  beaconLog(bcon)
+  printBeacon(bcon)
 
 server = new BeaconCentralServer manager, "test-server-1"
 server.listen 1337
