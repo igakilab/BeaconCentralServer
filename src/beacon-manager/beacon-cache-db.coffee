@@ -14,14 +14,7 @@ class BeaconCacheDatabase
     this.db.set this.bconKey(bcon), bcon, callback
 
   getBeaconByHashedKey: (hashedKey, callback) ->
-    this.db.getAll (err, res) ->
-      if err then callback err, null; return
-      result = null
-      for pair in res
-        if pair.key is hashedKey
-          result = pair.value
-          break
-      callback err, result
+    this.db.get hashedKey, callback
 
   getAllBeacon: (callback) ->
     this.db.getAll callback

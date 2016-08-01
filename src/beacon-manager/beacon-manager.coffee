@@ -32,6 +32,9 @@ class BeaconManager
         reply.push eres.value
       callback err, reply
 
+  getBeaconById: (hashedKey, callback) ->
+    this.cachedb.getBeaconByHashedKey hashedKey, callback
+
   getHistoryById: (hashedKey, callback) ->
     mng = this
     this.historydb.getBeaconHistoryByKey hashedKey, (err, res) ->
