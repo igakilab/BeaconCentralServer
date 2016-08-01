@@ -20,6 +20,13 @@ class BeaconCentralServer
       reply.beacons = res
       callback reply
 
+  getBeaconInfo: (id, callback) ->
+    reply = {centralId: this.id, BeaconKey: id}
+    this.manager.getBeaconById id, (err, res) ->
+      if err then reply.err = err
+      reply.beaconInfo = res
+      callback reply
+
   getBeaconHistory: (id, callback) ->
     reply = {centralId: this.id, beaconKey: id}
     this.manager.getHistoryById id, (err, res) ->
@@ -35,6 +42,11 @@ class BeaconCentralServer
     #beacon list
     router.get "/", (req, res) ->
       thisp.getAllBeacon (reply) ->
+        res.set 'Access-Control-Allow-Origin', "*"
+        res.json reply
+    #Beacon Info
+    router.get "/info/:beacon_key", (req, res) ->
+      thisp.getBeaconInfo req.params.beacon_key, (reply) ->
         res.set 'Access-Control-Allow-Origin', "*"
         res.json reply
     #BeaconHistory
