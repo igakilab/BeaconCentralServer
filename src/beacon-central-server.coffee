@@ -1,5 +1,3 @@
-Express = require 'express'
-
 class BeaconCentralServer
   constructor: (manager, inid) ->
     this.manager = null
@@ -13,53 +11,22 @@ class BeaconCentralServer
   setServerId: (id) ->
     this.id = id ? this.id
 
-  getAllBeacon: (callback) ->
-    reply = {centralId: this.id}
-    this.manager.getBeaconList (err, res) ->
-      if err then reply.err = err
-      reply.beacons = res
-      callback reply
-
-  getBeaconInfo: (id, callback) ->
-    reply = {centralId: this.id, BeaconKey: id}
-    this.manager.getBeaconById id, (err, res) ->
-      if err then reply.err = err
-      reply.beaconInfo = res
-      callback reply
-
-  getBeaconHistory: (id, callback) ->
-    reply = {centralId: this.id, beaconKey: id}
-    this.manager.getHistoryById id, (err, res) ->
-      if err then reply.err = err
-      reply.histories = res
-      reply.len = res.length
-      callback reply
-
-  buildServer: () ->
-    app = Express()
-    router = Express.Router()
-    thisp = this
-    #beacon list
-    router.get "/", (req, res) ->
-      thisp.getAllBeacon (reply) ->
-        res.set 'Access-Control-Allow-Origin', "*"
-        res.json reply
-    #Beacon Info
-    router.get "/info/:beacon_key", (req, res) ->
-      thisp.getBeaconInfo req.params.beacon_key, (reply) ->
-        res.set 'Access-Control-Allow-Origin', "*"
-        res.json reply
-    #BeaconHistory
-    router.get "/history/:beacon_key", (req, res) ->
-      thisp.getBeaconHistory req.params.beacon_key, (reply) ->
-        res.set 'Access-Control-Allow-Origin', "*"
-        res.json reply
-    #configure app
-    app.use "/beacon", router
-    return app
+  getReply: () ->
+    obj =
+      centralId: this.id
+      beacons: this.manager.getBeaconList()
+    return obj
 
   listen: (port, host) ->
-    app = this.buildServer()
-    app.listen port, host
+    bcs = this
+    http = require 'http'
+    server = http.createServer (req, res) ->
+      res.writeHead 200, {
+        'Content-Type': "application/json"
+        'Access-Control-Allow-Origin': "*"}
+      res.write JSON.stringify(bcs.getReply())
+      res.end()
+    server.listen port, host
+
 
 module.exports = BeaconCentralServer
